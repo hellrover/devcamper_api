@@ -3,11 +3,14 @@ const morgan = require("morgan")
 require("dotenv").config({ path: "./config/config.env" })
 require("colors")
 const logger = require("./middleware/logger")
+const connectDB = require("./config/db")
 
 const bootcampRouter = require("./routes/bootcamps")
 
-const app = express()
+connectDB()
 
+const app = express()
+app.use(express.json())
 app.use(logger)
 app.use(morgan("dev"))
 app.use("/api/v1/bootcamps", bootcampRouter)
