@@ -9,6 +9,11 @@ const {
 	deleteBootcamp,
 } = require("../controllers/bootcamps")
 
+// Course router
+const courseRouter = require("./courses")
+
+router.use("/:id/courses", courseRouter)
+
 router.route("/").get(getBootcamps).post(createBootcamp)
 router.route("/:id").get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp)
 

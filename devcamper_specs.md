@@ -19,3 +19,12 @@ III:
 4. Async Await middleware
 5. Mongoose middleware Slugify bootcamp name
 6. Process on unhandledRejection setup in server.js
+
+IV:
+
+1. Database Seeder for Bootcamps
+2. Advanced filtering
+3. Bootcamp pagination
+4. Course Model and seeding
+5. Course routes and controller(CRUD)
+6. Populate, virtuals and Cascade Bootcamp delete

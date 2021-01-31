@@ -1,7 +1,7 @@
 const ErrorResponse = require("../utils/ErrorResponse")
 
 const errorHandler = (error, req, res, next) => {
-	console.log(error.stack)
+	console.log(error.stack.red)
 	let err = { ...error }
 	err.message = error.message
 
@@ -17,7 +17,11 @@ const errorHandler = (error, req, res, next) => {
 	}
 
 	if (error.name === "ValidationError") {
-		const message = Object.values(error.errors).join(", ")
+		let message = Object.values(error.errors).join(", ")
+		// On createCourse, when Bootcamp not found by given id param
+		if (message.includes("CastError:")) {
+			message = `Resource not found`
+		}
 		err = new ErrorResponse(400, message)
 	}
 

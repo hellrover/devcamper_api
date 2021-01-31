@@ -7,6 +7,7 @@ const errorHandler = require("./middleware/error")
 const connectDB = require("./config/db")
 
 const bootcampRouter = require("./routes/bootcamps")
+const courseRouter = require("./routes/courses")
 
 connectDB()
 
@@ -15,6 +16,7 @@ app.use(express.json())
 app.use(logger)
 app.use(morgan("dev"))
 app.use("/api/v1/bootcamps", bootcampRouter)
+app.use("/api/v1/courses", courseRouter)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000

@@ -103,4 +103,8 @@ bootcampSchema.pre("save", function () {
 	this.slug = slugify(this.name, { lower: true })
 })
 
+bootcampSchema.pre("remove", async function () {
+	await this.model("Course").deleteMany({ bootcamp: this.id })
+})
+
 module.exports = mongoose.model("Bootcamp", bootcampSchema)
