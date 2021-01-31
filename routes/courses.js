@@ -10,7 +10,12 @@ const {
 	deleteCourse,
 } = require("../controllers/courses")
 
-router.route("/").get(getCourses).post(createCourse)
+// Course model for advacedSearch
+const Course = require("../models/Course")
+// advancedSearch middleware
+const advancedResults = require("../middleware/advancedResults")
+
+router.route("/").get(advancedResults(Course), getCourses).post(createCourse)
 router.route("/:id").get(getCourse).put(updateCourse).delete(deleteCourse)
 
 module.exports = router

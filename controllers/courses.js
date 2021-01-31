@@ -5,16 +5,15 @@ const ErrorResponse = require("../utils/ErrorResponse")
 exports.getCourses = asyncHandler(async (req, res, next) => {
 	const query = {}
 	if (req.params.id) {
-		query.bootcamp = req.params.id
+		const courses = await Course.find({ bootcamp: req.params.id })
+		return res.status(200).json({
+			success: true,
+			count: courses.length,
+			data: courses,
+		})
 	}
-	console.log(query)
-	const courses = await Course.find(query).populate("bootcamp")
 
-	res.status(200).json({
-		success: true,
-		count: courses.length,
-		data: courses,
-	})
+	res.status(200).json(res.advancedSearch)
 })
 
 exports.getCourse = asyncHandler(async (req, res, next) => {

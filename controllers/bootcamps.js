@@ -1,59 +1,10 @@
+const path = require("path")
 const Bootcamp = require("../models/Bootcamp")
 const asyncHandler = require("../middleware/async")
 const ErrorResponse = require("../utils/ErrorResponse")
 
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-	let queryStr = JSON.stringify(req.query)
-	queryStr.replace(/\b(lte|lt|gte|gt|in)\b/g, (match) => `$${match}`)
-	queryStr = JSON.parse(queryStr)
-
-	const filterFields = ["sort", "select", "limit", "page"]
-
-	filterFields.forEach((field) => {
-		delete queryStr[field]
-	})
-
-	let query = Bootcamp.find(queryStr)
-
-	if (req.query.sort) {
-		query = query.sort(req.query.sort.split(",").join(" "))
-	}
-
-	if (req.query.select) {
-		query = query.select(req.query.select.split(",").join(" "))
-	}
-
-	const page = parseInt(req.query.page) || 1
-	const limit = parseInt(req.query.limit) || 3
-
-	const startIndex = (page - 1) * limit
-	const endIndex = page * limit
-	const total = await Bootcamp.countDocuments()
-
-	query = await query.skip(startIndex).limit(limit)
-
-	const paginaton = {}
-
-	if (startIndex > 0) {
-		paginaton.prev = {
-			prev: page - 1,
-			limit,
-		}
-	}
-
-	if (endIndex < total) {
-		paginaton.next = {
-			next: page + 1,
-			limit,
-		}
-	}
-
-	res.status(200).json({
-		success: true,
-		paginaton,
-		count: query.length,
-		data: query,
-	})
+	res.status(200).json(res.advancedSearch)
 })
 
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
@@ -87,6 +38,38 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 	res.status(200).json({
 		success: true,
 		data: bootcamp,
+	})
+})
+
+exports.photoUpload = asyncHandler(async (req, res, next) => {
+	const bootcamp = await Bootcamp.findById(req.params.id)
+	if (!bootcamp) {
+		return next(new ErrorResponse(404, "Bootcamp not found"))
+	}
+	if (!req.files) {
+		return next(new ErrorResponse(400, "Please select file to upload"))
+	}
+	const file = req.files.file
+	if (!file.mimetype.startsWith("image/")) {
+		return next(new ErrorResponse(400, "Please select an image file to upload"))
+	}
+	if (file.size > process.env.MAX_FILE_UPLOAD) {
+		return next(new ErrorResponse(400, "Image too big"))
+	}
+	file.name = `photo_${bootcamp.id}${path.parse(file.name).ext}`
+	console.log(file.name)
+	file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (error) => {
+		if (error) {
+			console.log(error)
+			return next(new ErrorResponse(500, "Upload error"))
+		} else {
+			bootcamp.photo = file.name
+			await bootcamp.save()
+			res.status(200).json({
+				success: true,
+				data: file.name,
+			})
+		}
 	})
 })
 

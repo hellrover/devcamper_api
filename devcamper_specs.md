@@ -28,3 +28,10 @@ IV:
 4. Course Model and seeding
 5. Course routes and controller(CRUD)
 6. Populate, virtuals and Cascade Bootcamp delete
+
+V:
+
+1. Aggregate - Calculating the average course cost
+2. Photo upload
+3. AdvancedResults middleware
+4. Bootcap virtuals

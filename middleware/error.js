@@ -1,7 +1,7 @@
 const ErrorResponse = require("../utils/ErrorResponse")
 
 const errorHandler = (error, req, res, next) => {
-	console.log(error.stack.red)
+	console.log(error)
 	let err = { ...error }
 	err.message = error.message
 
