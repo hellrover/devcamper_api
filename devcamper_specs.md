@@ -35,3 +35,22 @@ V:
 2. Photo upload
 3. AdvancedResults middleware
 4. Bootcap virtuals
+
+VI:
+
+1. Create the User model
+2. User register method, encrypt password middleware
+3. Sign JSON webtoken on register
+4. User login method
+5. Sending JWT cookie
+6. Auth protect middleware, auth/me route
+7. Storing the token in Postman
+8. Role authorization
+
+# Storing token in Postman:
+
+<!-- language: javascript -->
+
+    if (pm.response.code === 200) {
+        pm.environment.set('authToken', pm.response.json().token)
+    }

@@ -44,7 +44,7 @@ courseSchema.statics.getAverageCost = async function (bootcampId) {
 			$match: { bootcamp: bootcampId },
 		},
 		{
-			$match: {
+			$group: {
 				_id: "$bootcamp",
 				averageCost: { $avg: "$tuition" },
 			},
@@ -59,7 +59,7 @@ courseSchema.statics.getAverageCost = async function (bootcampId) {
 		let averageCost = obj[0]
 			? Math.ceil(obj[0].averageCost / 10) * 10
 			: undefined
-		await this.model("Bootcamp").finByIdAndUpdate(bootcampId, { averageCost })
+		await this.model("Bootcamp").findByIdAndUpdate(bootcampId, { averageCost })
 	} catch (error) {
 		console.log(error)
 	}
