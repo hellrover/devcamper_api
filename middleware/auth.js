@@ -10,7 +10,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		!req.headers.authorization ||
 		!req.headers.authorization.startsWith("Bearer")
 	) {
-		return next(new ErrorResponse(400, "Please log in to proceed"))
+		return next(new ErrorResponse(401, "Please log in to proceed"))
 	}
 
 	token = req.headers.authorization.split(" ")[1]
@@ -20,12 +20,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 		console.log(decoded)
 		const user = await User.findById(decoded.id)
 		if (!user) {
-			return next(new ErrorResponse(400, "Please log in to proceed"))
+			return next(new ErrorResponse(401, "Please log in to proceed"))
 		}
 		req.user = user
 		next()
 	} catch (error) {
-		return next(new ErrorResponse(400, error.message))
+		return next(new ErrorResponse(401, error.message))
 	}
 })
 
@@ -35,7 +35,7 @@ exports.authorize = (...roles) => {
 		if (!roles.includes(req.user.role)) {
 			return next(
 				new ErrorResponse(
-					400,
+					401,
 					`Role "${req.user.role}" is not authorized to access this route`
 				)
 			)

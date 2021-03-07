@@ -54,3 +54,13 @@ VI:
     if (pm.response.code === 200) {
         pm.environment.set('authToken', pm.response.json().token)
     }
+
+VII:
+
+1. Bootcamp - User relationship, User seeder
+2. Bootcamp ownership, UPDATE, DELETE, PHOTO UPLOAD
+3. Course ownership, CREATE, UPDATE, DELETE
+4. Forgot password - Generate token
+5. Forgot password - Send email, nodemailer, mailtrap
+6. Reset password
+7. Update user details - name, email, Update password

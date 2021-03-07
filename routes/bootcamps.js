@@ -28,12 +28,14 @@ router
 		advancedResults(Bootcamp, { path: "courses", select: "title tuition" }),
 		getBootcamps
 	)
-	.post(protect, createBootcamp)
+	.post(protect, authorize("publisher", "admin"), createBootcamp)
 router
 	.route("/:id")
-	.get(protect, authorize("admin"), getBootcamp)
-	.put(protect, updateBootcamp)
-	.delete(protect, deleteBootcamp)
-router.route("/:id/photo").put(protect, photoUpload)
+	.get(getBootcamp)
+	.put(protect, authorize("publisher", "admin"), updateBootcamp)
+	.delete(protect, authorize("publisher", "admin"), deleteBootcamp)
+router
+	.route("/:id/photo")
+	.put(protect, authorize("publisher", "admin"), photoUpload)
 
 module.exports = router

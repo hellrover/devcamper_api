@@ -19,6 +19,13 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 })
 
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
+	const hasPublishedBootcamp = await Bootcamp.findOne({ user: req.user.id })
+	if (hasPublishedBootcamp && req.user.role !== "admin") {
+		return next(
+			new ErrorResponse(404, "This user already have a published bootcamp")
+		)
+	}
+	req.body.user = req.user.id
 	const bootcamp = await Bootcamp.create(req.body)
 	res.status(200).json({
 		success: true,
@@ -31,6 +38,13 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 	if (!bootcamp) {
 		return next(new ErrorResponse("404", "Resource not found"))
 	}
+
+	if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+		return next(
+			new ErrorResponse("401", "This action is not allowed for current user")
+		)
+	}
+
 	Object.keys(req.body).forEach((field) => {
 		bootcamp[field] = req.body[field]
 	})
@@ -46,6 +60,13 @@ exports.photoUpload = asyncHandler(async (req, res, next) => {
 	if (!bootcamp) {
 		return next(new ErrorResponse(404, "Bootcamp not found"))
 	}
+
+	if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+		return next(
+			new ErrorResponse("401", "This action is not allowed for current user")
+		)
+	}
+
 	if (!req.files) {
 		return next(new ErrorResponse(400, "Please select file to upload"))
 	}
@@ -78,6 +99,13 @@ exports.deleteBootcamp = async (req, res, next) => {
 	if (!bootcamp) {
 		return next(new ErrorResponse(404, "Resource not found"))
 	}
+
+	if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+		return next(
+			new ErrorResponse("401", "This action is not allowed for current user")
+		)
+	}
+
 	await bootcamp.remove()
 	res.status(200).json({
 		success: true,
